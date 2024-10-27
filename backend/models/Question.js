@@ -1,17 +1,12 @@
-// Question model
+// Quiz model
 
-const { text } = require('express');
 const mongoose = require('mongoose');
 
-const optionSchema = new mongoose.Schema({
-  text: String,
-  nextQuestionId: {type: mongoose.Schema.Types.ObjectId, ref: 'Question'},
-});
-
 const questionSchema = new mongoose.Schema({
-  question: String,
-  options: [optionSchema],
+    question: { type: String, required: true },
+    options: [{ type: String }],
+    followUps: [{ answer: String, nextQuestion: String }],
 });
 
-const Question = mongoose.model('Question', questionSchema);
-module.exports = Question;
+const Quiz = mongoose.model('Quiz', questionSchema);
+module.exports = Quiz;

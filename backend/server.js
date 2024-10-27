@@ -3,29 +3,36 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
+const cors = require('cors');
+const quizRoutes = require('./routes/quiz');
+// const bodyParser = require('body-parser');
+
 
 // Load environment variables
 dotenv.config();
 
-// Initialize express app and connection to mongodb
-const app = express();
+// Connection to mongodb
+const connectDB = require('./config/db');
 connectDB();
 
+// Initialize app
+const app = express();
+
 // Middleware
+app.use(cors());
 app.use(express.json());
 
-// Connect route to server
-const quizRoutes = require('./routes/quizRoutes'); 
-app.use('/api', quizRoutes);  // This line tells Express to prepend /api to all the routes defined in userRoutes. So if userRoutes has a route /users, it will be accessible at /api/users on the server.
 
 // Define routes
 app.get('/', (req, res) => {
   res.send("API is running...");
 });
 
+
 // PORT
 const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+app.use('/api/quiz', quizRoutes);
