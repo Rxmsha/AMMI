@@ -6,6 +6,7 @@ const router = express.Router();
 const QuizQuestion = require('../models/QuizQuestion'); // Import model
 
 
+// CORRECT ONEE
 // Function to determine the next question ID based on the current question and user response
 const determineNextQuestionId = async (currentQuestionId, userResponse) => {
   const nextQuestionMapping = {

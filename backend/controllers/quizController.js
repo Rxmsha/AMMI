@@ -4,7 +4,8 @@
 import mongoose from 'mongoose';
 import QuizQuestion from '../models/QuizQuestion.js'; 
 
-// Endpoint to fetch the next question
+// CORRECT ONE
+// Endpoint to fetch the next question 
 export const getNextQuestion = async (req, res) => {
   const { currentQuestionId, userResponse } = req.params;
 
