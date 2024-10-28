@@ -1,30 +1,37 @@
-// Quiz Router to fetch questions and submit user responses
-
 const express = require('express');
-const QuizQuestion = require('./models/QuizQuestion');
-const UserResponse = require('./models/UserResponse');
-
 const router = express.Router();
+const QuizQuestion = require('../models/QuizQuestion'); // Import model
 
-// Get all quiz questions
-router.get('/quiz-questions', async (req, res) => {
+// Endpoint to fetch the next question
+router.get('/next-question', async (req, res) => {
   try {
-    const questions = await QuizQuestion.find();
-    res.json(questions);
+    const nextQuestion = await QuizQuestion.findOne(); // Fetch the first question
+    if (!nextQuestion) {
+      return res.status(404).json({ message: "No more questions available." });
+    }
+    res.json(nextQuestion);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching questions' });
+    console.error("Error fetching next question:", error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
-// Submit a user response
-router.post('/user-responses', async (req, res) => {
-  const { questionId, selectedOption, userId } = req.body;
+// Endpoint to create a new quiz question
+router.post('/questions', async (req, res) => {
+  const questionData = req.body;
+
+  if (!questionData.question || !questionData.options) {
+    return res.status(400).json({ success: false, message: 'Please enter all fields' });
+  }
+
+  const newQuestion = new QuizQuestion(questionData);
+
   try {
-    const response = new UserResponse({ questionId, selectedOption, userId });
-    await response.save();
-    res.status(201).json(response);
+    await newQuestion.save();
+    res.status(201).json({ success: true, data: newQuestion });
   } catch (error) {
-    res.status(500).json({ message: 'Error saving response' });
+    console.error('Error creating quiz question:', error.message);
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 });
 

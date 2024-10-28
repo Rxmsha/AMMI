@@ -1,17 +1,34 @@
-// backend/controllers/quizController.js
-const Question = require('../models/Question');
+// controllers/quiz.controller.js
 
-exports.getNextQuestion = async (req, res) => {
-    const { questionId, answer } = req.body;
+import mongoose from 'mongoose';
+import QuizQuestion from '../models/QuizQuestion.js'; // Adjust path as necessary
 
-    // Find question and determine next question based on answer
-    const question = await Question.findById(questionId);
-    const nextQuestionId = question.followUpQuestions.get(answer);
+// Fetch all quiz questions
+export const getQuizQuestions = async (req, res) => {
+  try {
+    const questions = await QuizQuestion.find({});
+    res.status(200).json({ success: true, data: questions });
+  } catch (error) {
+    console.error('Error fetching quiz questions:', error.message);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
 
-    if (nextQuestionId) {
-        const nextQuestion = await Question.findById(nextQuestionId);
-        return res.json({ question: nextQuestion });
-    } else {
-        return res.json({ message: "Quiz complete!" });
-    }
+// Create a new quiz question
+export const createQuizQuestion = async (req, res) => {
+  const questionData = req.body;
+
+  if (!questionData.question || !questionData.options) {
+    return res.status(400).json({ success: false, message: 'Please enter all fields' });
+  }
+
+  const newQuestion = new QuizQuestion(questionData);
+
+  try {
+    await newQuestion.save();
+    res.status(201).json({ success: true, data: newQuestion });
+  } catch (error) {
+    console.error('Error creating quiz question:', error.message);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
 };

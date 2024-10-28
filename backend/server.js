@@ -11,6 +11,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const corsOptions = {
+    origin: 'http://localhost:5173', // your frontend URL
+    optionsSuccessStatus: 200
+  };
+app.use(cors(corsOptions));
+  
+
 // Connect to the Database
 connectDB();
 
@@ -20,6 +27,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/quiz', quizRoutes);
+
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,54 +1,64 @@
-// src/pages/QuizPage.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
 
 const QuizPage = () => {
-  const { state } = useLocation();
-  const { questions } = state || { questions: [] };
-  const [userAnswers, setUserAnswers] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [userId] = useState("user-id-placeholder"); // Replace with actual user ID logic
 
-  const handleAnswerChange = (questionId, answer) => {
-    setUserAnswers((prev) => {
-      const updatedAnswers = prev.filter((ans) => ans.questionId !== questionId);
-      return [...updatedAnswers, { questionId, answer }];
-    });
-  };
+  useEffect(() => {
+    // Fetch the initial question
+    fetchNextQuestion();
+  }, []);
 
-  const handleSubmit = async () => {
-    const userId = 'some_unique_user_id'; // You could generate this dynamically
+  const fetchNextQuestion = async (questionId = null, answer = null) => {
     try {
-      await axios.post('/api/quiz/submit', { userId, answers: userAnswers });
-      alert('Responses submitted successfully!');
+      const response = await axios.get('/api/quiz/next-question', { // Adjusted URL here
+        params: { questionId, answer }
+      });
+      
+      setCurrentQuestion(response.data);
+      setLoading(false);
     } catch (error) {
-      console.error('Error submitting responses:', error);
+      console.error("Error fetching question:", error);
     }
   };
 
-  if (questions.length === 0) {
-    return <div>No questions available. Please go back.</div>;
-  }
+  const handleOptionSelect = async (option) => {
+    try {
+      // Save user response
+      await axios.post('/api/user-responses', {
+        questionId: currentQuestion._id,
+        selectedOption: option,
+        userId
+      });
+
+      // Fetch the next question based on the selected option
+      fetchNextQuestion(currentQuestion._id, option);
+    } catch (error) {
+      console.error("Error saving response:", error);
+    }
+  };
 
   return (
     <div>
       <h1>Quiz</h1>
-      {questions.map((question) => (
-        <div key={question._id}>
-          <h3>{question.question}</h3>
-          {question.options.map((option) => (
-            <div key={option}>
-              <input
-                type="radio"
-                name={question._id}
-                value={option}
-                onChange={() => handleAnswerChange(question._id, option)}
-              />
-              <label>{option}</label>
-            </div>
-          ))}
+      {loading ? (
+        <p>Loading questions...</p>
+      ) : currentQuestion ? (
+        <div>
+          <h3>{currentQuestion.question}</h3>
+          <ul>
+            {currentQuestion.options.map((option, index) => (
+              <li key={index}>
+                <button onClick={() => handleOptionSelect(option)}>{option}</button>
+              </li>
+            ))}
+          </ul>
         </div>
-      ))}
-      <button onClick={handleSubmit}>Submit Answers</button>
+      ) : (
+        <p>No more questions available.</p>
+      )}
     </div>
   );
 };
