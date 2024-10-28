@@ -4,7 +4,7 @@ import axios from 'axios';
 const QuizPage = () => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userId] = useState("user-id-placeholder"); // Replace with actual user ID logic
+  const [history, setHistory] = useState([]); // History stack to keep track of previous questions
 
   useEffect(() => {
     // Fetch the initial question
@@ -13,17 +13,15 @@ const QuizPage = () => {
 
   const fetchNextQuestion = async (currentQuestionId = null, userResponse = null) => {
     try {
-      // This part will handle both initial fetch and subsequent question fetch
-      const response = await axios.get(`/api/quiz/next-question${currentQuestionId ? `/${currentQuestionId}/${userResponse}` : ''}`);
-      
-      console.log("Next question response:", response.data); // Log the response data
-
+      // Fetch the next question or initial question
+      const response = await axios.get(
+        `/api/quiz/next-question${currentQuestionId ? `/${currentQuestionId}/${userResponse}` : ''}`
+      );
       if (response.data) {
         setCurrentQuestion(response.data);
       } else {
         console.log("No more questions available");
       }
-      
       setLoading(false);
     } catch (error) {
       console.error("Error fetching question:", error);
@@ -31,18 +29,14 @@ const QuizPage = () => {
     }
   };
 
-  // Implement a Temporary Store for Responses
-  const [userResponses, setUserResponses] = useState([]); // State to store user responses
   const handleOptionSelect = async (option) => {
     try {
-      console.log("Selected option:", option); // Log selected option
-
-      // Save response temporarily in state
-      setUserResponses((prevResponses) => [
-        ...prevResponses,
-        { questionId: currentQuestion._id, selectedOption: option }
+      // Save the current question in history before moving to the next one
+      setHistory((prevHistory) => [
+        ...prevHistory,
+        { questionId: currentQuestion._id, selectedOption: option, question: currentQuestion }
       ]);
-
+      
       // Fetch the next question based on the selected option
       fetchNextQuestion(currentQuestion._id, option);
     } catch (error) {
@@ -50,11 +44,19 @@ const QuizPage = () => {
     }
   };
 
-  
+  const handleBack = () => {
+    if (history.length > 0) {
+      const previousQuestion = history[history.length - 1];
+      setCurrentQuestion(previousQuestion.question);
+      setHistory((prevHistory) => prevHistory.slice(0, -1)); // Remove the last item from history
+    } else {
+      console.log("No previous question available.");
+    }
+  };
 
   return (
     <div>
-      <h1>Quiz CORRECT ONE</h1>
+      <h1>Quiz</h1>
       {loading ? (
         <p>Loading questions...</p>
       ) : currentQuestion ? (
@@ -67,6 +69,10 @@ const QuizPage = () => {
               </li>
             ))}
           </ul>
+          {/* Render Back button if there's history */}
+          {history.length > 0 && (
+            <button onClick={handleBack}>Back</button>
+          )}
         </div>
       ) : (
         <p>No more questions available.</p>
@@ -74,6 +80,5 @@ const QuizPage = () => {
     </div>
   );
 };
-
 
 export default QuizPage;

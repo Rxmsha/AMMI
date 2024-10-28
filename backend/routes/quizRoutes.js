@@ -8,18 +8,12 @@ const QuizQuestion = require('../models/QuizQuestion'); // Import model
 
 // CORRECT ONEE
 // Function to determine the next question ID based on the current question and user response
+// Removed the static mapping from determineNextQuestionId function
 const determineNextQuestionId = async (currentQuestionId, userResponse) => {
-  const nextQuestionMapping = {
-    "q1": {
-      "Yes": "q2",
-      "No": "q3"
-    },
-    // Add more mappings as needed
-  };
-
-  // Get the next question ID based on the current question ID and user response
-  return nextQuestionMapping[currentQuestionId]?.[userResponse] || null;
+  const currentQuestion = await QuizQuestion.findById(currentQuestionId);
+  return currentQuestion?.next[userResponse] || null;
 };
+
 
 
 // Endpoint to fetch the first question
