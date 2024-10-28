@@ -1,34 +1,38 @@
-// controllers/quiz.controller.js
+// QUIZ CONTROLLER to fetch the next question based on the current question ID and the user's response
+// This file contains the logic for handling quiz-related operations. It specifically handles fetching the next question based on the current question ID and the user's response.
 
 import mongoose from 'mongoose';
-import QuizQuestion from '../models/QuizQuestion.js'; // Adjust path as necessary
+import QuizQuestion from '../models/QuizQuestion.js'; 
 
-// Fetch all quiz questions
-export const getQuizQuestions = async (req, res) => {
-  try {
-    const questions = await QuizQuestion.find({});
-    res.status(200).json({ success: true, data: questions });
-  } catch (error) {
-    console.error('Error fetching quiz questions:', error.message);
-    res.status(500).json({ success: false, message: 'Server Error' });
-  }
-};
-
-// Create a new quiz question
-export const createQuizQuestion = async (req, res) => {
-  const questionData = req.body;
-
-  if (!questionData.question || !questionData.options) {
-    return res.status(400).json({ success: false, message: 'Please enter all fields' });
-  }
-
-  const newQuestion = new QuizQuestion(questionData);
+// Endpoint to fetch the next question
+export const getNextQuestion = async (req, res) => {
+  const { currentQuestionId, userResponse } = req.params;
 
   try {
-    await newQuestion.save();
-    res.status(201).json({ success: true, data: newQuestion });
+    // Find the current question by ID
+    const currentQuestion = await QuizQuestion.findById(currentQuestionId);
+
+    if (!currentQuestion) {
+      return res.status(404).json({ message: "Question not found." });
+    }
+
+    // Determine the next question ID based on the user's response
+    const nextQuestionId = currentQuestion.next[userResponse];
+
+    if (!nextQuestionId) {
+      return res.status(404).json({ message: "No more questions available." });
+    }
+
+    // Fetch the next question using the ID
+    const nextQuestion = await QuizQuestion.findById(nextQuestionId);
+
+    if (!nextQuestion) {
+      return res.status(404).json({ message: "Next question not found." });
+    }
+
+    res.json(nextQuestion); // Send the next question back to the client
   } catch (error) {
-    console.error('Error creating quiz question:', error.message);
-    res.status(500).json({ success: false, message: 'Server Error' });
+    console.error("Error fetching next question:", error);
+    res.status(500).json({ error: "Server error" });
   }
 };

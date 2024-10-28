@@ -10,3 +10,4 @@ const userResponseSchema = new mongoose.Schema({
 const UserResponse = mongoose.model('UserResponse', userResponseSchema);
 
 module.exports = UserResponse;
+

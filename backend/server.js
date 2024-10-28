@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 const corsOptions = {
-    origin: 'http://localhost:5173', // your frontend URL
+    origin: 'http://localhost:5173', //  frontend URL
     optionsSuccessStatus: 200
   };
 app.use(cors(corsOptions));
@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-app.use('/api/quiz', quizRoutes);
+app.use('/api/quiz', quizRoutes); // Mount quiz routes
 
 
 const PORT = process.env.PORT;
