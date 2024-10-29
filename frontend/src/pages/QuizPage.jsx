@@ -1,4 +1,3 @@
-// Done
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ResultsPage from './ResultsPage'; // Import the ResultsPage component
@@ -115,11 +114,8 @@ const QuizPage = () => {
       setHistory(updatedHistory);
       sessionStorage.setItem('quizHistory', JSON.stringify(updatedHistory)); // Update stored history
 
-      // Restore previous results
-      let newResults = results.filter(result => result.questionId !== previousQuestion.questionId);
-      if (previousQuestion.selectedOption.toLowerCase() === 'yes') {
-        newResults.push({ questionId: previousQuestion.questionId, question: previousQuestion.question.question });
-      }
+      // Clear results for the current question
+      const newResults = results.filter(result => result.questionId !== previousQuestion.questionId);
       setResults(newResults);
       sessionStorage.setItem('quizResults', JSON.stringify(newResults)); // Update stored results
 

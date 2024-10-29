@@ -1,4 +1,3 @@
-// Done
 import React from 'react';
 
 const ResultsPage = ({ results, handleBack, handleRestart, history }) => {
