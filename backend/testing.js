@@ -1,28 +1,23 @@
-// Done
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ResultsPage from './ResultsPage'; // Import the ResultsPage component
 
 const QuizPage = () => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [history, setHistory] = useState([]);
   const [quizEnded, setQuizEnded] = useState(false);
-  const [results, setResults] = useState([]);
 
   useEffect(() => {
     // Load history and quiz state from session storage
     const storedHistory = JSON.parse(sessionStorage.getItem('quizHistory'));
     const storedCurrentQuestion = JSON.parse(sessionStorage.getItem('currentQuestion'));
     const storedQuizEnded = JSON.parse(sessionStorage.getItem('quizEnded'));
-    const storedResults = JSON.parse(sessionStorage.getItem('quizResults'));
 
     // If there's stored history and current question, resume from the last question; otherwise, fetch the first question
     if (storedHistory && storedHistory.length > 0 && storedCurrentQuestion) {
       setHistory(storedHistory);
       setCurrentQuestion(storedCurrentQuestion);
       setQuizEnded(storedQuizEnded);
-      setResults(storedResults || []);
       setLoading(false); // Set loading to false after setting the current question
     } else {
       fetchFirstQuestion();
@@ -33,7 +28,6 @@ const QuizPage = () => {
       sessionStorage.removeItem('quizHistory');
       sessionStorage.removeItem('currentQuestion');
       sessionStorage.removeItem('quizEnded');
-      sessionStorage.removeItem('quizResults');
     };
   }, []);
 
@@ -71,18 +65,6 @@ const QuizPage = () => {
       setHistory(newHistory);
       sessionStorage.setItem('quizHistory', JSON.stringify(newHistory)); // Store history in session storage
 
-      // Track the user's response for results
-      let newResults = [...results];
-      if (option.toLowerCase() === 'yes') {
-        if (!newResults.some(result => result.questionId === currentQuestion._id)) {
-          newResults.push({ questionId: currentQuestion._id, question: currentQuestion.question });
-        }
-      } else {
-        newResults = newResults.filter(result => result.questionId !== currentQuestion._id);
-      }
-      setResults(newResults);
-      sessionStorage.setItem('quizResults', JSON.stringify(newResults)); // Store results in session storage
-
       // Fetch the next question based on the selected option
       const response = await axios.post('/api/quiz/answer', {
         currentQuestionId: currentQuestion._id,
@@ -115,14 +97,6 @@ const QuizPage = () => {
       setHistory(updatedHistory);
       sessionStorage.setItem('quizHistory', JSON.stringify(updatedHistory)); // Update stored history
 
-      // Restore previous results
-      let newResults = results.filter(result => result.questionId !== previousQuestion.questionId);
-      if (previousQuestion.selectedOption.toLowerCase() === 'yes') {
-        newResults.push({ questionId: previousQuestion.questionId, question: previousQuestion.question.question });
-      }
-      setResults(newResults);
-      sessionStorage.setItem('quizResults', JSON.stringify(newResults)); // Update stored results
-
       // Reset quiz ended state if it was set
       if (quizEnded) {
         setQuizEnded(false);
@@ -138,10 +112,8 @@ const QuizPage = () => {
     sessionStorage.removeItem('quizHistory');
     sessionStorage.removeItem('currentQuestion');
     sessionStorage.removeItem('quizEnded');
-    sessionStorage.removeItem('quizResults');
     setHistory([]);
     setQuizEnded(false);
-    setResults([]);
     setLoading(true);
     fetchFirstQuestion();
   };
@@ -149,37 +121,38 @@ const QuizPage = () => {
   return (
     <div>
       <h1>Quiz</h1>
-      {loading ? (
-        <p>Loading questions...</p>
-      ) : (
-        <div>
-          {quizEnded ? (
-            <ResultsPage
-              results={results}
-              handleBack={handleBack}
-              handleRestart={handleRestart}
-              history={history}
-            />
-          ) : currentQuestion ? (
-            <div>
-              <h3>{currentQuestion.question}</h3>
-              <ul>
-                {currentQuestion.options.map((option, index) => (
-                  <li key={index}>
-                    <button onClick={() => handleOptionSelect(option)}>{option}</button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <p>No more questions available.</p>
-          )}
-        </div>
-      )}
-      {/* Render the Back button only if there is a history */}
-      {history.length > 0 && !quizEnded && (
-        <button onClick={handleBack}>Back</button>
-      )}
+        {loading ? (
+          <p>Loading questions...</p>
+        ) : (
+          <div>
+            {quizEnded ? (
+              <div>
+                <p>No more questions available.</p>
+                {history.length > 0 && (
+                  <button onClick={handleBack}>Back</button>
+                )}
+                <button onClick={handleRestart}>Restart</button>
+              </div>
+            ) : currentQuestion ? (
+              <div>
+                <h3>{currentQuestion.question}</h3>
+                <ul>
+                  {currentQuestion.options.map((option, index) => (
+                    <li key={index}>
+                      <button onClick={() => handleOptionSelect(option)}>{option}</button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p>No more questions available.</p>
+            )}
+          </div>
+        )}
+        {/* Render the Back button only if there is a history */}
+        {history.length > 0 && !quizEnded && (
+          <button onClick={handleBack}>Back</button>
+        )}
     </div>
   );
 };
