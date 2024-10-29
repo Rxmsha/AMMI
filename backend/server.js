@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const quizRoutes = require('./routes/quizRoutes');
+const session = require('express-session');
 
 dotenv.config();
 
@@ -26,7 +27,19 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
+app.use(session({
+  secret: process.env.SESSION_SECRET, // Change this to a secure key
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to `true` if using HTTPS
+}));
+
+
+
+
+// Order matters; all middleware should be mounted before the routes
 app.use('/api/quiz', quizRoutes); // Mount quiz routes
+
 
 
 const PORT = process.env.PORT;
