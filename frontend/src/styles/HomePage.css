@@ -1,0 +1,48 @@
+/* HomePage.css */
+
+.homepage-container {
+  text-align: center;
+  padding: 50px;
+  background-color: #eee3bf;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-color: #0056b3;
+}
+
+.homepage-header {
+  font-size: 48px;
+  margin-bottom: 30px;
+}
+
+.homepage-header h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.homepage-header p {
+  font-size: 18px;
+  color: #555;
+}
+
+.homepage-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.homepage-button {
+  padding: 15px 30px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.homepage-button:hover {
+  background-color: #0056b3;
+}

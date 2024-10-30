@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Text, VStack } from '@chakra-ui/react';
-import '../styles/styles.css'; // Import the CSS file with the font and animation
+import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react';
+import backgroundImage from '../images/background.png'; // Adjust the path as needed
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -19,24 +19,16 @@ const HomePage = () => {
     navigate('/learn-more'); // Navigate to the learn more page
   };
 
-  const headingText = "Welcome to AMMI";
-
   return (
     <Box textAlign="center" minHeight="100vh" display="flex" flexDirection="column">
       <Box
         width="100%"
         height="50vh" // Take up the top half of the viewport height
-        bg="#F895A3" // Set the background color to pink
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Box className="animated-heading" fontFamily="'Aladin', cursive" fontSize="9xl" fontWeight="bold">
-          {headingText.split("").map((char, index) => (
-            <span key={index} style={{ '--char-index': index }}>{char === " " ? "\u00A0" : char}</span>
-          ))}
-        </Box>
-      </Box>
+        bgImage={`url(${backgroundImage})`}
+        bgSize="cover" // Ensure the image covers the entire width
+        bgRepeat="no-repeat"
+        bgPosition="center"
+      />
       <Box
         display="flex"
         flexDirection="column"
@@ -47,11 +39,14 @@ const HomePage = () => {
         color="black"
       >
         <VStack spacing={4}>
-          <Text fontSize="xl" color="#333">Your one-stop resource for newcomers to Canada.</Text>
-          <Button bg="#26202C" color="white" size="lg" onClick={handleNewToCanada} className="custom-button">
+          <Heading as="h1" size="2xl" color="red">
+            Welcome to Our Website!
+          </Heading>
+          <Text fontSize="xl">Your one-stop resource for newcomers to Canada.</Text>
+          <Button colorScheme="blue" size="lg" onClick={handleNewToCanada}>
             I am new to Canada
           </Button>
-          <Button bg="#26202C" color="white" size="lg" onClick={handleLearnMore} className="custom-button">
+          <Button colorScheme="blue" size="lg" onClick={handleLearnMore}>
             Learn More
           </Button>
         </VStack>
