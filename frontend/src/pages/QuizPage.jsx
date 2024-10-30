@@ -72,7 +72,7 @@ const QuizPage = () => {
 
       // Track the user's response for results
       let newResults = [...results];
-      if (option.toLowerCase() === 'yes') {
+      if (option.toLowerCase() === 'no') {
         if (!newResults.some(result => result.questionId === currentQuestion._id)) {
           newResults.push({ questionId: currentQuestion._id, question: currentQuestion.question });
         }

@@ -1,0 +1,31 @@
+/* ResultsPage.css */
+
+.results-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.results-heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.result-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 10px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result-card h3 {
+  margin-top: 0;
+}
+
+.result-card p {
+  margin-bottom: 0;
+}

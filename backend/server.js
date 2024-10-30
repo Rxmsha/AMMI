@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 });
 
 app.use(session({
-  secret: process.env.SESSION_SECRET, // Change this to a secure key
+  secret: "fewfef", // Change this to a secure key
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false } // Set to `true` if using HTTPS
