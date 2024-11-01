@@ -1,3 +1,4 @@
+// src/pages/HomePage.jsx
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
@@ -11,8 +12,8 @@ const HomePage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleNewToCanada = () => {
-    navigate('/new-to-canada'); // Navigate to the new page
+  const handleStatusPage = () => {
+    navigate('/status'); // Navigate to the status page
   };
 
   const handleLearnMore = () => {
@@ -48,7 +49,7 @@ const HomePage = () => {
       >
         <VStack spacing={4}>
           <Text fontSize="xl" color="#333">Your one-stop resource for people in Canada.</Text>
-          <Button bg="#26202C" color="white" size="lg" onClick={handleNewToCanada} className="custom-button">
+          <Button bg="#26202C" color="white" size="lg" onClick={handleStatusPage} className="custom-button">
             Explore resources
           </Button>
           <Button bg="#26202C" color="white" size="lg" onClick={handleLearnMore} className="custom-button">

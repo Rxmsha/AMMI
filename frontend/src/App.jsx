@@ -5,16 +5,23 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
-import NewToCanadaPage from './pages/NewToCanadaPage'; 
-import QuizPage from './pages/QuizPage';
-
+import StatusPage from './pages/StatusPage'; 
+import CitizenQuizPage from './pages/CitizenQuizPage';
+import PRQuizPage from './pages/PRQuizPage';
+import TemporaryQuizPage from './pages/TemporaryQuizPage';
+import SpecialQuizPage from './pages/SpecialQuizPage';
+import OtherQuizPage from './pages/OtherQuizPage';
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/new-to-canada" element={<NewToCanadaPage />} />
-      <Route path="/quiz" element={<QuizPage />} />
+      <Route path="/status" element={<StatusPage />} />
+      <Route path="/quiz/citizen" element={<CitizenQuizPage />} />
+      <Route path="/quiz/pr" element={<PRQuizPage />} />
+      <Route path="/quiz/temporary" element={<TemporaryQuizPage />} />
+      <Route path="/quiz/special" element={<SpecialQuizPage />} />
+      <Route path="/quiz/other" element={<OtherQuizPage />} />
     </Routes>
   );
 };

@@ -1,11 +1,11 @@
-// src/pages/NewToCanadaPage.jsx
+// src/pages/StatusPage.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import '../styles/styles.css'; // Import the CSS file with the font and animation
 
-const NewToCanadaPage = () => {
+const StatusPage = () => {
   const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
 
@@ -25,8 +25,8 @@ const NewToCanadaPage = () => {
     }
   };
 
-  const handleTellMeWhatINeedClick = () => {
-    navigate('/quiz', { state: { questions } }); // Navigate to the quiz page
+  const handleNavigate = (path) => {
+    navigate(path, { state: { questions } });
   };
 
   return (
@@ -40,7 +40,7 @@ const NewToCanadaPage = () => {
         alignItems="center"
       >
         <Box fontFamily="'Aladin', cursive" fontSize="6xl" fontWeight="bold">
-          Some text here...
+          Welcome to Canada
         </Box>
       </Box>
       <Box
@@ -53,10 +53,21 @@ const NewToCanadaPage = () => {
         color="black"
       >
         <VStack spacing={4}>
-          <Text fontSize="2xl" color="#333">You are new to Canada! We’ve got you!</Text>
-          <Text fontSize="lg" color="#333">Take this quiz right now to figure out what you need.</Text>
-          <Button bg="#26202C" color="white" size="lg" onClick={handleTellMeWhatINeedClick} className="custom-button">
-            Tell me what I need
+          <Text fontSize="2xl" color="#333">What is your current status in Canada?</Text>
+          <Button bg="#26202C" color="white" size="lg" onClick={() => handleNavigate('/quiz/citizen')} className="custom-button">
+            Canadian Citizen
+          </Button>
+          <Button bg="#26202C" color="white" size="lg" onClick={() => handleNavigate('/quiz/pr')} className="custom-button">
+            Permanent Resident
+          </Button>
+          <Button bg="#26202C" color="white" size="lg" onClick={() => handleNavigate('/quiz/temporary')} className="custom-button">
+            Temporary Resident
+          </Button>
+          <Button bg="#26202C" color="white" size="lg" onClick={() => handleNavigate('/quiz/special')} className="custom-button">
+            Special Status
+          </Button>
+          <Button bg="#26202C" color="white" size="lg" onClick={() => handleNavigate('/quiz/other')} className="custom-button">
+            Other
           </Button>
         </VStack>
       </Box>
@@ -64,4 +75,4 @@ const NewToCanadaPage = () => {
   );
 };
 
-export default NewToCanadaPage;
+export default StatusPage;
