@@ -66,9 +66,6 @@ const StatusPage = () => {
           <Button bg="#26202C" color="white" size="lg" onClick={() => handleNavigate('/quiz/special')} className="custom-button">
             Special Status
           </Button>
-          <Button bg="#26202C" color="white" size="lg" onClick={() => handleNavigate('/quiz/other')} className="custom-button">
-            Other
-          </Button>
         </VStack>
       </Box>
     </Box>

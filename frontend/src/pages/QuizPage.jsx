@@ -1,11 +1,13 @@
 // src/pages/QuizPage.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import { Box, Button, Text, VStack, HStack } from '@chakra-ui/react';
 import ResultsPage from './ResultsPage'; // Import the ResultsPage component
 import '../styles/styles.css'; // Import the CSS file with the font and animation
 
 const QuizPage = () => {
+  const { status } = useParams(); // Get the status parameter from the route
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [history, setHistory] = useState([]);
@@ -37,11 +39,11 @@ const QuizPage = () => {
       sessionStorage.removeItem('quizEnded');
       sessionStorage.removeItem('quizResults');
     };
-  }, []);
+  }, [status]); // Add status as a dependency to refetch questions when status changes
 
   const fetchFirstQuestion = async () => {
     try {
-      const response = await axios.get('/api/quiz/first-question'); // Update this endpoint to get the first question
+      const response = await axios.get(`/api/quiz/${status}/first-question`); // Update this endpoint to get the first question based on status
       setCurrentQuestion(response.data);
       sessionStorage.setItem('currentQuestion', JSON.stringify(response.data)); // Save current question to session storage
     } catch (error) {
@@ -53,7 +55,7 @@ const QuizPage = () => {
 
   const fetchNextQuestion = async () => {
     try {
-      const response = await axios.get('/api/quiz/next-question');
+      const response = await axios.get(`/api/quiz/${status}/next-question`); // Update this endpoint to get the next question based on status
       setCurrentQuestion(response.data);
       sessionStorage.setItem('currentQuestion', JSON.stringify(response.data)); // Save current question to session storage
     } catch (error) {
@@ -65,15 +67,13 @@ const QuizPage = () => {
 
   const handleOptionSelect = async (option) => {
     try {
-      // Save the current question in history before moving to the next one
       const newHistory = [
         ...history,
         { questionId: currentQuestion._id, selectedOption: option, question: currentQuestion }
       ];
       setHistory(newHistory);
       sessionStorage.setItem('quizHistory', JSON.stringify(newHistory)); // Store history in session storage
-
-      // Track the user's response for results
+  
       let newResults = [...results];
       if (option.toLowerCase() === 'no') {
         if (!newResults.some(result => result.questionId === currentQuestion._id)) {
@@ -84,24 +84,24 @@ const QuizPage = () => {
       }
       setResults(newResults);
       sessionStorage.setItem('quizResults', JSON.stringify(newResults)); // Store results in session storage
-
-      // Fetch the next question based on the selected option
-      const response = await axios.post('/api/quiz/answer', {
+  
+      const response = await axios.post(`/api/quiz/${status}/answer`, {
         currentQuestionId: currentQuestion._id,
         userResponse: option
       });
-
-      if (response.data) {
-        setCurrentQuestion(response.data);
-        sessionStorage.setItem('currentQuestion', JSON.stringify(response.data)); // Save current question to session storage
-      } else {
+  
+      if (response.data.message === "Quiz ended") {
         setQuizEnded(true);
         sessionStorage.setItem('quizEnded', JSON.stringify(true)); // Save quiz ended state to session storage
+      } else {
+        setCurrentQuestion(response.data);
+        sessionStorage.setItem('currentQuestion', JSON.stringify(response.data)); // Save current question to session storage
       }
     } catch (error) {
       console.error("Error processing response:", error);
     }
   };
+  
 
   const handleBack = () => {
     if (history.length > 0) {
