@@ -1,6 +1,9 @@
+// src/pages/QuizPage.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Box, Button, Text, VStack, HStack } from '@chakra-ui/react';
 import ResultsPage from './ResultsPage'; // Import the ResultsPage component
+import '../styles/styles.css'; // Import the CSS file with the font and animation
 
 const QuizPage = () => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -143,40 +146,71 @@ const QuizPage = () => {
   };
 
   return (
-    <div>
-      <h1>Quiz</h1>
-      {loading ? (
-        <p>Loading questions...</p>
-      ) : (
-        <div>
-          {quizEnded ? (
-            <ResultsPage
-              results={results}
-              handleBack={handleBack}
-              handleRestart={handleRestart}
-              history={history}
-            />
-          ) : currentQuestion ? (
-            <div>
-              <h3>{currentQuestion.question}</h3>
-              <ul>
-                {currentQuestion.options.map((option, index) => (
-                  <li key={index}>
-                    <button onClick={() => handleOptionSelect(option)}>{option}</button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <p>No more questions available.</p>
-          )}
-        </div>
-      )}
-      {/* Render the Back button only if there is a history */}
-      {history.length > 0 && !quizEnded && (
-        <button onClick={handleBack}>Back</button>
-      )}
-    </div>
+    <Box textAlign="center" minHeight="100vh" display="flex" flexDirection="column" p={4}>
+      <Box
+        width="100%"
+        bg="#F895A3" // Set the background color to pink
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        p={4}
+        mb={4}
+      >
+        <Text fontFamily="'Aladin', cursive" fontSize="4xl" fontWeight="bold">
+          Quiz
+        </Text>
+      </Box>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        flex="1"
+        p={4}
+        color="black"
+      >
+        {loading ? (
+          <Text fontSize="xl">Loading questions...</Text>
+        ) : (
+          <Box width="100%" maxWidth="600px">
+            {quizEnded ? (
+              <ResultsPage
+                results={results}
+                handleBack={handleBack}
+                handleRestart={handleRestart}
+                history={history}
+              />
+            ) : currentQuestion ? (
+              <VStack spacing={4}>
+                <Text fontSize="2xl" color="#333">{currentQuestion.question}</Text>
+                <VStack spacing={3} width="100%">
+                  {currentQuestion.options.map((option, index) => (
+                    <Button
+                      key={index}
+                      onClick={() => handleOptionSelect(option)}
+                      bg="#26202C"
+                      color="white"
+                      size="lg"
+                      className="custom-button"
+                      width="100%"
+                    >
+                      {option}
+                    </Button>
+                  ))}
+                </VStack>
+              </VStack>
+            ) : (
+              <Text fontSize="xl">No more questions available.</Text>
+            )}
+          </Box>
+        )}
+        {history.length > 0 && !quizEnded && (
+          <Button onClick={handleBack} mt={4} bg="#26202C" color="white" className="custom-button">
+            Back
+          </Button>
+        )}
+      </Box>
+    </Box>
   );
 };
 

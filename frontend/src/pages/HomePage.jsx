@@ -47,9 +47,9 @@ const HomePage = () => {
         color="black"
       >
         <VStack spacing={4}>
-          <Text fontSize="xl" color="#333">Your one-stop resource for newcomers to Canada.</Text>
+          <Text fontSize="xl" color="#333">Your one-stop resource for people in Canada.</Text>
           <Button bg="#26202C" color="white" size="lg" onClick={handleNewToCanada} className="custom-button">
-            I am new to Canada
+            Explore resources
           </Button>
           <Button bg="#26202C" color="white" size="lg" onClick={handleLearnMore} className="custom-button">
             Learn More

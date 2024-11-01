@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Box, Button, VStack } from '@chakra-ui/react';
 import customMessagesData from './customMessages.json'; // Adjust the path as needed
 import '../styles/ResultsPage.css'; // Import the CSS file
 
@@ -28,13 +29,19 @@ const ResultsPage = ({ results, handleBack, handleRestart, history }) => {
   };
 
   return (
-    <div>
+    <Box textAlign="center" p={4}>
       {renderResults()}
-      {history.length > 0 && (
-        <button onClick={handleBack}>Back</button>
-      )}
-      <button onClick={handleRestart}>Restart</button>
-    </div>
+      <VStack spacing={4} mt={4}>
+        {history.length > 0 && (
+          <Button onClick={handleBack} bg="#26202C" color="white" className="custom-button">
+            Back
+          </Button>
+        )}
+        <Button onClick={handleRestart} bg="#26202C" color="white" className="custom-button">
+          Restart
+        </Button>
+      </VStack>
+    </Box>
   );
 };
 
