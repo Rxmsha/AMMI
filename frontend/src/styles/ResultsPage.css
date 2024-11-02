@@ -1,11 +1,29 @@
 /* ResultsPage.css */
 
+@keyframes bounce-skills{
+  0%{
+    transform: translate(0)
+  }
+  20%{
+    transform: translateY(-6px);
+  }
+  40%{
+    transform: translate(0);
+  }
+  60%{
+    transform: translateY(-3px);
+  }
+  80%{
+    transform: translate(0);
+  }
+}  
+
 .results-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%; /* Take up full width */
-  max-width: 800px; /* Increase max width */
+  max-width: 1200px; /* Increase max width */
   margin: 0 auto; /* Center the container */
 }
 
@@ -17,19 +35,29 @@
 .result-card {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 30px; /* Increase padding */
+  border-radius: 30px;
+  padding: 40px; /* Adjust padding to a reasonable value */
   margin: 20px; /* Increase margin */
   width: 100%; /* Take up full width */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Increase shadow */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+  text-align: center; /* Center text */
+}
+
+.result-card:hover {
+  animation: bounce-skills 0.5s;
 }
 
 .result-card h3 {
-  font-size: 24px; /* Increase font size */
+  font-size: 40px; /* Increase font size */
   margin-top: 0;
+  margin-bottom: 10px; /* Add bottom margin for spacing */
 }
 
 .result-card p {
-  font-size: 18px; /* Increase font size */
+  font-size: 18px; /* Adjust font size */
   margin-bottom: 0;
+  line-height: 1.5; /* Improve readability */
 }

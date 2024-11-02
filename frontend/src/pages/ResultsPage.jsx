@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, VStack } from '@chakra-ui/react';
+import { Box, Button, VStack, Text } from '@chakra-ui/react';
 import customMessagesData from './customMessages.json'; // Adjust the path as needed
 import '../styles/ResultsPage.css'; // Import the CSS file
 
@@ -11,22 +11,29 @@ const ResultsPage = ({ results, handleBack, handleRestart, history }) => {
     setCustomMessages(customMessagesData);
   }, []);
 
+  const getCustomMessage = (questionId, choice, status) => {
+    const questionMessages = customMessages[questionId];
+    if (questionMessages && questionMessages.responses) {
+      const responseMessages = questionMessages.responses[choice.toLowerCase()];
+      if (responseMessages) {
+        if (responseMessages.responses) {
+          return responseMessages.responses[status] || responseMessages.responses.default || "No specific message for this choice.";
+        }
+        return responseMessages[status] || responseMessages.default || "No specific message for this choice.";
+      }
+    }
+    return "No specific message for this choice.";
+  };
+
   const renderResults = () => {
     return (
       <div className="results-container">
-        <h2 className="results-heading">Resources</h2>
         {results.map((result, index) => {
-          const customMessage = customMessages[result.questionId];
-          const responseMessage = 
-            customMessage && 
-            customMessage.responses &&
-            customMessage.responses[result.response] &&
-            customMessage.responses[result.response][result.status.toLowerCase()];
-  
+          const customMessage = getCustomMessage(result.questionId, result.response, result.status);
           return (
             <div key={index} className="result-card">
-              <h3>{customMessage ? customMessage.heading : result.question}</h3>
-              <p>{responseMessage || (customMessage && customMessage.responses[result.response].default)}</p>
+              <h3>{customMessages[result.questionId] ? customMessages[result.questionId].heading : result.question}</h3>
+              <p>{customMessage}</p>
             </div>
           );
         })}
@@ -35,7 +42,28 @@ const ResultsPage = ({ results, handleBack, handleRestart, history }) => {
   };
 
   return (
-    <Box textAlign="center" p={4}>
+    <Box textAlign="center" minHeight="100vh" display="flex" flexDirection="column" p={4}>
+      <Box
+        width="100%"
+        bg="#F895A3" // Set the background color to pink
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        p={4}
+        mb={4}
+        border="2px solid #333"
+        borderRadius="40px"
+        sx={{
+          transition: 'transform 0.3s ease-in-out',
+          '&:hover': {
+            animation: 'bounce-skills 0.6s',
+          },
+        }}
+      >
+        <Text fontFamily="'Aladin', cursive" fontSize="4xl" fontWeight="bold">
+          Resources
+        </Text>
+      </Box>
       {renderResults()}
       <VStack spacing={4} mt={4}>
         {history.length > 0 && (
