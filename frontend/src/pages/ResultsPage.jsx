@@ -14,13 +14,19 @@ const ResultsPage = ({ results, handleBack, handleRestart, history }) => {
   const renderResults = () => {
     return (
       <div className="results-container">
-        <h2 className="results-heading">Results</h2>
+        <h2 className="results-heading">Resources</h2>
         {results.map((result, index) => {
           const customMessage = customMessages[result.questionId];
+          const responseMessage = 
+            customMessage && 
+            customMessage.responses &&
+            customMessage.responses[result.response] &&
+            customMessage.responses[result.response][result.status.toLowerCase()];
+  
           return (
             <div key={index} className="result-card">
               <h3>{customMessage ? customMessage.heading : result.question}</h3>
-              <p>{customMessage ? customMessage.message : `Here is how to...`}</p>
+              <p>{responseMessage || (customMessage && customMessage.responses[result.response].default)}</p>
             </div>
           );
         })}

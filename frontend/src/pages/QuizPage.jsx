@@ -74,17 +74,27 @@ const QuizPage = () => {
       setHistory(newHistory);
       sessionStorage.setItem('quizHistory', JSON.stringify(newHistory)); // Store history in session storage
   
+      // Handle responses for both "yes" and "no"
       let newResults = [...results];
-      if (option.toLowerCase() === 'no') {
-        if (!newResults.some(result => result.questionId === currentQuestion._id)) {
-          newResults.push({ questionId: currentQuestion._id, question: currentQuestion.question });
-        }
+      if (!newResults.some(result => result.questionId === currentQuestion._id)) {
+        newResults.push({
+          questionId: currentQuestion._id,
+          question: currentQuestion.question,
+          response: option.toLowerCase(),
+          status // Include the status to use in ResultsPage
+        });
       } else {
-        newResults = newResults.filter(result => result.questionId !== currentQuestion._id);
+        // Update the existing result if it exists
+        newResults = newResults.map(result => 
+          result.questionId === currentQuestion._id
+            ? { ...result, response: option.toLowerCase(), status }
+            : result
+        );
       }
       setResults(newResults);
       sessionStorage.setItem('quizResults', JSON.stringify(newResults)); // Store results in session storage
   
+      // Continue with next question logic
       const response = await axios.post(`/api/quiz/${status}/answer`, {
         currentQuestionId: currentQuestion._id,
         userResponse: option
@@ -101,6 +111,7 @@ const QuizPage = () => {
       console.error("Error processing response:", error);
     }
   };
+  
   
 
   const handleBack = () => {

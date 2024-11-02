@@ -1,34 +1,16 @@
 {
   "q1": {
-    "heading": "Housing Options",
-    "message": "Finding a place to live can be hard, but there are programs that might help! You could qualify for free or low-cost housing support. Here are some tips and services to help you find safe and affordable housing."
-  },
-  "q2": {
-    "heading": "Food Resources",
-    "message": "Making sure you have enough to eat is important. Many communities offer food programs, food banks, and places where you can get free or low-cost groceries. If you’re in need, these services can help."
-  },
-  "q3": {
-    "heading": "Getting a SIN",
-    "message": "A Social Insurance Number (SIN) is important for working and accessing services in Canada. If you don’t have one, you can apply through Service Canada. This number will allow you to work legally and get government benefits."
-  },
-  "q4": {
-    "heading": "Health Coverage",
-    "message": "Health insurance gives you access to doctors, hospitals, and other medical services. If you’re not covered, you may qualify for provincial or community health programs. Contact your local health office to learn about free or low-cost options."
-  },
-  "q5": {
-    "heading": "Family Services",
-    "message": "There are many resources available for families with children, including schools, community programs, and childcare support. These services can help with both schooling and daycare."
-  },
-  "q6": {
-    "heading": "School Enrollment",
-    "message": "Enrolling your children in school is important for their learning. Every child in Canada has a right to go to school. You can register at a local school or talk to community centers for help with the process."
-  },
-  "q7": {
-    "heading": "Language Support",
-    "message": "Learning English can open doors to jobs, services, and community. Free or low-cost language classes are often available to newcomers. There are also language partners and online resources to help you practice."
-  },
-  "q8": {
-    "heading": "Permanent Residency Help",
-    "message": "Permanent Residency (PR) lets you live and work in Canada permanently. Many programs help newcomers apply for PR, including settlement services and legal clinics. They can guide you through the application process and answer questions."
+    "heading": "Benefits by status",
+    "responses": {
+      "yes": {
+        "citizen": "Here is a list of scholarships for citizens",
+        "pr": "Here is a list of scholarships for permanent residents",
+        "temporary": "Here is a list of scholarships for temporary residents",
+        "special": "Here is a list of scholarships for special status"
+      },
+      "no": {
+        "default": "No problem! Feel free to explore other resources."
+      }
+    }
   }
 }
