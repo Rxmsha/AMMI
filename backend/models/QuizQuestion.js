@@ -1,4 +1,3 @@
-// models/QuizQuestion.js
 const mongoose = require('mongoose');
 
 const quizQuestionSchema = new mongoose.Schema({
@@ -6,7 +5,8 @@ const quizQuestionSchema = new mongoose.Schema({
   question: { type: String, required: true },
   options: [{ type: String, required: true }],
   next: { type: Object, required: true }, // Mapping of user responses to next question IDs
-  status: [{ type: String, required: true }] // Array of allowed statuses
+  status: [{ type: String, required: true }], // Array of allowed statuses
+  ageSensitive: { type: Boolean, default: false } // New field to indicate if the question is age-sensitive
 });
 
 // Automatically create the model from the schema

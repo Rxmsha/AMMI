@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const quizRoutes = require('./routes/quizRoutes');
 const session = require('express-session');
+const resultRoutes = require('./routes/results');
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ app.use(session({
 // Order matters; all middleware should be mounted before the routes
 app.use('/api/quiz', quizRoutes); // Mount quiz routes
 
+app.use('/api/results', resultRoutes); // Use the result routes
 
 
 const PORT = process.env.PORT;

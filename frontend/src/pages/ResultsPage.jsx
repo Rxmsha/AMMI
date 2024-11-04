@@ -1,51 +1,86 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, VStack, Text } from '@chakra-ui/react';
-import customMessagesData from './customMessages.json'; // Adjust the path as needed
-import '../styles/ResultsPage.css'; // Import the CSS file
+import axios from 'axios';
+import '../styles/ResultsPage.css';
 
 const ResultsPage = ({ results, handleBack, handleRestart, history }) => {
   const [customMessages, setCustomMessages] = useState({});
 
+  // Function to fetch individual result by questionId
+  const fetchResults = async (questionId) => {
+    try {
+      const response = await axios.get(`/api/results/${questionId}`);
+      setCustomMessages((prev) => ({ ...prev, [questionId]: response.data }));
+    } catch (error) {
+      console.error("Error fetching results:", error);
+    }
+  };
+
+  // Fetch data for each result's questionId
   useEffect(() => {
-    // Load custom messages from JSON file
-    setCustomMessages(customMessagesData);
-  }, []);
+    results.forEach((result) => {
+      fetchResults(result.questionId);
+    });
+  }, [results]);
 
   const getCustomMessage = (questionId, choice, status) => {
     const questionMessages = customMessages[questionId];
     if (questionMessages && questionMessages.responses) {
       const responseMessages = questionMessages.responses[choice.toLowerCase()];
       if (responseMessages) {
-        if (responseMessages.responses) {
-          return responseMessages.responses[status] || responseMessages.responses.default || "No specific message for this choice.";
+        const message = responseMessages[status] || responseMessages.default || null;
+        if (message) {
+          return (
+            <div>
+              {message.split('\n').map((line, index) => {
+                if (line.includes('Under 18:') || line.includes('18+:')) {
+                  return (
+                    <p key={index}>
+                      <span className="button-like">{line}</span>
+                    </p>
+                  );
+                } else {
+                  return <p key={index}>{line}</p>;
+                }
+              })}
+            </div>
+          );
         }
-        return responseMessages[status] || responseMessages.default || "No specific message for this choice.";
       }
     }
-    return "No specific message for this choice.";
+    return null;
   };
-
+  
   const renderResults = () => {
     return (
       <div className="results-container">
         {results.map((result, index) => {
           const customMessage = getCustomMessage(result.questionId, result.response, result.status);
+  
+          // Skip rendering the result card if there is no specific message
+          if (!customMessage) {
+            return null;
+          }
+  
+          // Define custom CSS classes for specific questions
+          const customClass = `result-card ${result.questionId}`;
+  
           return (
-            <div key={index} className="result-card">
+            <div key={index} className={customClass}>
               <h3>{customMessages[result.questionId] ? customMessages[result.questionId].heading : result.question}</h3>
-              <p>{customMessage}</p>
+              <div>{customMessage}</div>
             </div>
           );
         })}
       </div>
     );
   };
-
+  
   return (
     <Box textAlign="center" minHeight="100vh" display="flex" flexDirection="column" p={4}>
       <Box
         width="100%"
-        bg="#F895A3" // Set the background color to pink
+        bg="#F895A3"
         display="flex"
         justifyContent="center"
         alignItems="center"

@@ -1,7 +1,6 @@
-// src/pages/QuizPage.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Button, Text, VStack, HStack } from '@chakra-ui/react';
 import ResultsPage from './ResultsPage'; // Import the ResultsPage component
 import '../styles/styles.css'; // Import the CSS file with the font and animation
@@ -13,6 +12,14 @@ const QuizPage = () => {
   const [history, setHistory] = useState([]);
   const [quizEnded, setQuizEnded] = useState(false);
   const [results, setResults] = useState([]);
+  const navigate = useNavigate();
+
+  const statusMapping = {
+    citizen: 'Canadian Citizen',
+    pr: 'Permanent Resident',
+    temporary: 'Temporary Resident',
+    special: 'Special Status Resident'
+  };
 
   useEffect(() => {
     // Load history and quiz state from session storage
@@ -44,22 +51,12 @@ const QuizPage = () => {
   const fetchFirstQuestion = async () => {
     try {
       const response = await axios.get(`/api/quiz/${status}/first-question`); // Update this endpoint to get the first question based on status
-      setCurrentQuestion(response.data);
-      sessionStorage.setItem('currentQuestion', JSON.stringify(response.data)); // Save current question to session storage
+      const question = response.data;
+      question.question = question.question.replace('[status]', statusMapping[status]);
+      setCurrentQuestion(question);
+      sessionStorage.setItem('currentQuestion', JSON.stringify(question)); // Save current question to session storage
     } catch (error) {
       console.error("Error fetching the first question:", error);
-    } finally {
-      setLoading(false); // Ensure loading is set to false in both success and error cases
-    }
-  };
-
-  const fetchNextQuestion = async () => {
-    try {
-      const response = await axios.get(`/api/quiz/${status}/next-question`); // Update this endpoint to get the next question based on status
-      setCurrentQuestion(response.data);
-      sessionStorage.setItem('currentQuestion', JSON.stringify(response.data)); // Save current question to session storage
-    } catch (error) {
-      console.error("Error fetching question:", error);
     } finally {
       setLoading(false); // Ensure loading is set to false in both success and error cases
     }
@@ -104,15 +101,15 @@ const QuizPage = () => {
         setQuizEnded(true);
         sessionStorage.setItem('quizEnded', JSON.stringify(true)); // Save quiz ended state to session storage
       } else {
-        setCurrentQuestion(response.data);
-        sessionStorage.setItem('currentQuestion', JSON.stringify(response.data)); // Save current question to session storage
+        const nextQuestion = response.data;
+        nextQuestion.question = nextQuestion.question.replace('[status]', statusMapping[status]);
+        setCurrentQuestion(nextQuestion);
+        sessionStorage.setItem('currentQuestion', JSON.stringify(nextQuestion)); // Save current question to session storage
       }
     } catch (error) {
       console.error("Error processing response:", error);
     }
   };
-  
-  
 
   const handleBack = () => {
     if (history.length > 0) {
@@ -154,6 +151,18 @@ const QuizPage = () => {
     setResults([]);
     setLoading(true);
     fetchFirstQuestion();
+  };
+
+  const handleGoBackToStatusPage = () => {
+    // Clear session storage and reset state
+    sessionStorage.removeItem('quizHistory');
+    sessionStorage.removeItem('currentQuestion');
+    sessionStorage.removeItem('quizEnded');
+    sessionStorage.removeItem('quizResults');
+    setHistory([]);
+    setQuizEnded(false);
+    setResults([]);
+    navigate('/status', { replace: true }); // Navigate back to the StatusPage using replace
   };
 
   return (
@@ -209,6 +218,11 @@ const QuizPage = () => {
                     </Button>
                   ))}
                 </VStack>
+                {history.length === 0 && (
+                  <Button onClick={handleGoBackToStatusPage} mt={4} bg="#26202C" color="white" className="custom-button">
+                    &larr; Go back
+                  </Button>
+                )}
               </VStack>
             ) : (
               <Text fontSize="xl">No more questions available.</Text>

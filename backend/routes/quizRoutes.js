@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const QuizQuestion = require('../models/QuizQuestion'); // Import model
+const Result = require('../models/Result');
 
 // Determine the next question ID based on the current question and user response
 const determineNextQuestionId = async (currentQuestionId, userResponse, userStatus) => {
@@ -18,7 +19,6 @@ const determineNextQuestionId = async (currentQuestionId, userResponse, userStat
   
   return null; // No valid next question found
 };
-
 
 // Endpoint to fetch the first question for a specific status
 router.get('/:status/first-question', async (req, res) => {
@@ -80,7 +80,6 @@ router.get('/:status/next-question', async (req, res) => {
   }
 });
 
-
 // Endpoint to fetch the next question based on user response for a specific status
 router.post('/:status/answer', async (req, res) => {
   const { currentQuestionId, userResponse } = req.body;
@@ -104,8 +103,6 @@ router.post('/:status/answer', async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-
-
 
 // Endpoint to fetch a specific question by ID
 router.get('/question/:id', async (req, res) => {
@@ -137,6 +134,21 @@ router.post('/questions', async (req, res) => {
   } catch (error) {
     console.error('Error creating quiz question:', error.message);
     res.status(500).json({ success: false, message: 'Server Error' });
+  }
+});
+
+// Endpoint to fetch results by question ID
+router.get('/results/:questionId', async (req, res) => {
+  const { questionId } = req.params;
+  try {
+    const result = await Result.findOne({ questionId });
+    if (!result) {
+      return res.status(404).json({ message: "Results not found." });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching results:", error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
