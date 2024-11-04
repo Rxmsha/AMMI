@@ -8,6 +8,12 @@ const determineNextQuestionId = async (currentQuestionId, userResponse, userStat
   const currentQuestion = await QuizQuestion.findById(currentQuestionId);
   const nextQuestionId = currentQuestion?.next[userResponse];
 
+  // If the next question ID is "goToNextQuestion", find the next question in the collection
+  if (nextQuestionId === 'goToNextQuestion') {
+    const nextQuestion = await QuizQuestion.findOne({ _id: { $gt: currentQuestionId }, status: { $in: [userStatus] } }).sort({ _id: 1 });
+    return nextQuestion ? nextQuestion._id : null;
+  }
+
   // Fetch the next question to check its status
   if (nextQuestionId) {
     const nextQuestion = await QuizQuestion.findById(nextQuestionId);

@@ -33,7 +33,7 @@ const ResultsPage = ({ results, handleBack, handleRestart, history }) => {
           return (
             <div>
               {message.split('\n').map((line, index) => {
-                if (line.includes('Under 18:') || line.includes('18+:')) {
+                if (line.includes('Under 18') || line.includes('18+')) {
                   return (
                     <p key={index}>
                       <span className="button-like">{line}</span>
